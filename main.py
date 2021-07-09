@@ -141,21 +141,21 @@ def Part(X2, part):
     if part == 'tit':
         f1 = numpy.array([0, 0, 0])
         f2 = numpy.array([0, 0, 0])
-        f3 = numpy.array([250, 0, 0])
+        f3 = numpy.array([255, 0, 0])
         f4 = numpy.array([255, 0, 0])
         mask1 = cv2.inRange(X2, f1, f2)
         mask2 = cv2.inRange(X2, f3, f4)
         mask = numpy.bitwise_or(mask1, mask2)
     if part == 'aur':
-        f1 = numpy.array([250, 0, 0])
+        f1 = numpy.array([255, 0, 0])
         f2 = numpy.array([255, 0, 0])
         mask = cv2.inRange(X2, f1, f2)
     if part == 'vag':
-        f1 = numpy.array([0, 0, 250])
+        f1 = numpy.array([0, 0, 255])
         f2 = numpy.array([0, 0, 255])
         mask = cv2.inRange(X2, f1, f2)
     if part == 'bel':
-        f1 = numpy.array([250, 0, 250])
+        f1 = numpy.array([255, 0, 255])
         f2 = numpy.array([255, 0, 255])
         mask = cv2.inRange(X2, f1, f2)
     contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
