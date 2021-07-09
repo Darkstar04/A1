@@ -113,8 +113,8 @@ def X_3(X1, X2):
         if obj.name == 'vag': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
     f1 = numpy.array([0, 255, 0])
     f2 = numpy.array([0, 255, 0])
-    mask = cv2.bitwise_not(cv2.inRange(X1, f1, f2))
-    mask_inv = cv2.bitwise_not(mask)
+    mask = numpy.invert(cv2.inRange(X1, f1, f2))
+    mask_inv = numpy.invert(mask)
     X_3 = cv2.bitwise_and(X1, X1, mask=mask) + cv2.bitwise_and(details, details, mask=mask_inv)
     return X_3
 
@@ -145,7 +145,7 @@ def Part(X2, part):
         f4 = numpy.array([255, 0, 0])
         mask1 = cv2.inRange(X2, f1, f2)
         mask2 = cv2.inRange(X2, f3, f4)
-        mask = cv2.bitwise_or(mask1, mask2)
+        mask = numpy.bitwise_or(mask1, mask2)
     if part == 'aur':
         f1 = numpy.array([250, 0, 0])
         f2 = numpy.array([255, 0, 0])
