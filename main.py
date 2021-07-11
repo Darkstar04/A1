@@ -121,18 +121,16 @@ def X_3(X1, X2):
 
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    for cnt in contours:
-        if len(cnt)>5:
-            ellipse = cv2.fitEllipse(cnt)
-            x1 = ellipse[0][0]
-            y1 = ellipse[0][1]
-            h1 = ellipse[1][0]
-            w1 = ellipse[1][1]
+    ellipse = cv2.fitEllipse(5)
+    x = ellipse[0][0]
+    y = ellipse[0][1]
+    h = ellipse[1][0]
+    w = ellipse[1][1]
 
-    x = math.ceil(x1)
-    y = math.ceil(y1)
-    h = math.ceil(h1 / 2)
-    w = math.ceil(w1 / 2)
+    x = math.ceil(x)
+    y = math.ceil(y)
+    h = math.ceil(h / 2)
+    w = math.ceil(w / 2)
     nip_h = int(5 + aur.w*random.uniform(0.1, 0.1))
     nip_w = int(5 + aur.w*random.uniform(0.1, 0.1))
 
