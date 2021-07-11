@@ -119,7 +119,7 @@ def X_3(X1, X2):
     vag2 = numpy.array([0, 0, 255])
     mask = cv2.inRange(X2, vag1, vag2)
 
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0]
 
     ellipse = cv2.fitEllipse(5)
     x = ellipse[0][0]
