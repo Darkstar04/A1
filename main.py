@@ -103,60 +103,41 @@ def X_3(X1, X2):
     X1 = numpy.array(X1)
     X2 = numpy.array(X2)
     
+    x = math.ceil(obj.x)
+    y = math.ceil(obj.y)
+    h = math.ceil(obj.h / 2)
+    w = math.ceil(obj.w / 2)
+    
+    #tit
     f1 = numpy.array([0, 0, 0])
     f2 = numpy.array([0, 0, 0])
     mask = cv2.inRange(X2, f1, f2)
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    cv2.drawContours(details, contours, -1, (0, 205, 0), cv2.FILLED)
+    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
     
-    for obj in Annotations(X2):
-        x = math.ceil(obj.x)
-        y = math.ceil(obj.y)
-        h = math.ceil(obj.h / 2)
-        w = math.ceil(obj.w / 2)
-        if obj.name == 'aur': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
-        if obj.name == 'nip': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
-        if obj.name == 'bel': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
-        if obj.name == 'vag': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
-    f1 = numpy.array([0, 255, 0])
-    f2 = numpy.array([0, 255, 0])
-    mask = cv2.inRange(X1, f1, f2)
-    mask_inv = numpy.invert(cv2.inRange(X1, f1, f2))
-    X_3 = cv2.bitwise_and(X1, X1, mask=mask_inv) + cv2.bitwise_and(details, details, mask=mask)
-    return X_3
+    #aur
+    f1 = numpy.array([255, 0, 0])
+    f2 = numpy.array([255, 0, 0])
+    mask = cv2.inRange(X2, f1, f2)
+    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
+    
+    #nip
+    nip_dim = int(5 + aur.w*random.uniform(0.1, 0.1))
+    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
 
-class BodyPart:
-
-    def __init__(self, name, x, y, h, w):
-        self.name = name
-        self.x = x
-        self.y = y
-        self.h = h
-        self.w = w
-
-def Annotations(X2):
-    aur = Part(X2, 'aur')
-    vag = Part(X2, 'vag')
-    bel = Part(X2, 'bel')
-    nip = InferNip(aur)
-    return aur + nip + vag + bel
-
-def Part(X2, part):
-    X2 = numpy.array(X2)
-    bodypart = []
-    if part == 'aur':
-        f1 = numpy.array([255, 0, 0])
-        f2 = numpy.array([255, 0, 0])
-        mask = cv2.inRange(X2, f1, f2)
-    if part == 'vag':
-        f1 = numpy.array([0, 0, 255])
-        f2 = numpy.array([0, 0, 255])
-        mask = cv2.inRange(X2, f1, f2)
-    if part == 'bel':
-        f1 = numpy.array([255, 0, 255])
-        f2 = numpy.array([255, 0, 255])
-        mask = cv2.inRange(X2, f1, f2)
-    contours, hierarchy = cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    
+    #bel
+    f1 = numpy.array([255, 0, 255])
+    f2 = numpy.array([255, 0, 255])
+    mask = cv2.inRange(X2, f1, f2)
+    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
+    
+    #vag
+    f1 = numpy.array([0, 0, 255])
+    f2 = numpy.array([0, 0, 255])
+    mask = cv2.inRange(X2, f1, f2)
+    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
+    
+    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
         if len(cnt)>5:
             ellipse = cv2.fitEllipse(cnt)
@@ -164,14 +145,14 @@ def Part(X2, part):
             y = ellipse[0][1]
             h = ellipse[1][0]
             w = ellipse[1][1]
-            bodypart.append(BodyPart(part, x, y, h, w))
-    return bodypart
-
-def InferNip(aur):
-    nip = []
-    for aur in aur:
-        nip_dim = int(5 + aur.w*random.uniform(0.1, 0.1))
-        nip.append(BodyPart('nip', aur.x, aur.y, nip_dim, nip_dim))
-    return nip
+    
+    #mask
+    f1 = numpy.array([0, 255, 0])
+    f2 = numpy.array([0, 255, 0])
+    mask = cv2.inRange(X1, f1, f2)
+    mask_inv = numpy.invert(cv2.inRange(X1, f1, f2))
+    
+    X_3 = cv2.bitwise_and(X1, X1, mask=mask_inv) + cv2.bitwise_and(details, details, mask=mask)
+    return X_3
 
 if __name__ == '__main__': Process()
