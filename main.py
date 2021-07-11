@@ -114,8 +114,8 @@ def X_3(X1, X2):
     f1 = numpy.array([0, 255, 0])
     f2 = numpy.array([0, 255, 0])
     mask = cv2.inRange(X1, f1, f2)
-    mask_inv = numpy.invert(cv2.inRange(X1, f1, f2))
-    X_3 = cv2.bitwise_and(X1, X1, mask=mask_inv) + cv2.bitwise_and(details, details, mask=mask)
+    mask_invert = numpy.invert(mask)
+    X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(details, details, mask=mask)
     return X_3
 
 class BodyPart:
@@ -130,10 +130,10 @@ class BodyPart:
 def Annotations(X2):
     tit = Part(X2, 'tit')
     aur = Part(X2, 'aur')
-    vag = Part(X2, 'vag')
     bel = Part(X2, 'bel')
+    vag = Part(X2, 'vag')
     nip = InferNip(aur)
-    return tit + aur + nip + vag + bel
+    return tit + aur + nip + bel + vag
 
 def Part(X2, part):
     X2 = numpy.array(X2)
@@ -146,13 +146,13 @@ def Part(X2, part):
         f1 = numpy.array([255, 0, 0])
         f2 = numpy.array([255, 0, 0])
         mask = cv2.inRange(X2, f1, f2)
-    if part == 'vag':
-        f1 = numpy.array([0, 0, 255])
-        f2 = numpy.array([0, 0, 255])
-        mask = cv2.inRange(X2, f1, f2)
     if part == 'bel':
         f1 = numpy.array([255, 0, 255])
         f2 = numpy.array([255, 0, 255])
+        mask = cv2.inRange(X2, f1, f2)
+    if part == 'vag':
+        f1 = numpy.array([0, 0, 255])
+        f2 = numpy.array([0, 0, 255])
         mask = cv2.inRange(X2, f1, f2)
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
