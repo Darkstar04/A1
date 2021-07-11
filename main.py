@@ -114,25 +114,25 @@ def X_3(X1, X2):
     bel1 = numpy.array([255, 0, 255])
     bel2 = numpy.array([255, 0, 255])
     mask = cv2.inRange(X2, bel1, bel2)
-    
+
     vag1 = numpy.array([0, 0, 255])
     vag2 = numpy.array([0, 0, 255])
     mask = cv2.inRange(X2, vag1, vag2)
 
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
+
     for cnt in contours:
         if len(cnt)>5:
             ellipse = cv2.fitEllipse(cnt)
-            x = ellipse[0][0]
-            y = ellipse[0][1]
-            h = ellipse[1][0]
-            w = ellipse[1][1]
-    
-    x = math.ceil(x)
-    y = math.ceil(y)
-    h = math.ceil(h / 2)
-    w = math.ceil(w / 2)
+            x1 = ellipse[0][0]
+            y1 = ellipse[0][1]
+            h1 = ellipse[1][0]
+            w1 = ellipse[1][1]
+
+    x = math.ceil(x1)
+    y = math.ceil(y1)
+    h = math.ceil(h1 / 2)
+    w = math.ceil(w1 / 2)
     nip_h = int(5 + aur.w*random.uniform(0.1, 0.1))
     nip_w = int(5 + aur.w*random.uniform(0.1, 0.1))
 
@@ -146,7 +146,7 @@ def X_3(X1, X2):
     f2 = numpy.array([0, 255, 0])
     mask = cv2.inRange(X1, f1, f2)
     mask_inv = numpy.invert(cv2.inRange(X1, f1, f2))
-    
+
     X_3 = cv2.bitwise_and(X1, X1, mask=mask_inv) + cv2.bitwise_and(details, details, mask=mask)
     return X_3
 
