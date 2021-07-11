@@ -102,11 +102,13 @@ def X_3(X1, X2):
     details = numpy.array(X1)
     X1 = numpy.array(X1)
     X2 = numpy.array(X2)
+    
     f1 = numpy.array([0, 0, 0])
     f2 = numpy.array([0, 0, 0])
     mask = cv2.inRange(X2, f1, f2)
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    cv2.drawContours(details, contours, -1, 205, cv2.FILLED)
+    cv2.drawContours(details, contours, -1, (0, 255, 0), cv2.FILLED)
+    
     for obj in Annotations(X2):
         x = math.ceil(obj.x)
         y = math.ceil(obj.y)
