@@ -102,42 +102,25 @@ def X_3(X1, X2):
     details = numpy.array(X1)
     X1 = numpy.array(X1)
     X2 = numpy.array(X2)
-    
-    x = math.ceil(obj.x)
-    y = math.ceil(obj.y)
-    h = math.ceil(obj.h / 2)
-    w = math.ceil(obj.w / 2)
-    
-    #tit
-    f1 = numpy.array([0, 0, 0])
-    f2 = numpy.array([0, 0, 0])
-    mask = cv2.inRange(X2, f1, f2)
-    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
-    
-    #aur
-    f1 = numpy.array([255, 0, 0])
-    f2 = numpy.array([255, 0, 0])
-    mask = cv2.inRange(X2, f1, f2)
-    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
-    
-    #nip
-    nip_dim = int(5 + aur.w*random.uniform(0.1, 0.1))
-    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
 
+    tit1 = numpy.array([0, 0, 0])
+    tit2 = numpy.array([0, 0, 0])
+    mask = cv2.inRange(X2, tit1, tit2)
+
+    aur1 = numpy.array([255, 0, 0])
+    aur2 = numpy.array([255, 0, 0])
+    mask = cv2.inRange(X2, aur1, aur2)
+
+    bel1 = numpy.array([255, 0, 255])
+    bel2 = numpy.array([255, 0, 255])
+    mask = cv2.inRange(X2, bel1, bel2)
     
-    #bel
-    f1 = numpy.array([255, 0, 255])
-    f2 = numpy.array([255, 0, 255])
-    mask = cv2.inRange(X2, f1, f2)
-    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
-    
-    #vag
-    f1 = numpy.array([0, 0, 255])
-    f2 = numpy.array([0, 0, 255])
-    mask = cv2.inRange(X2, f1, f2)
-    cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
-    
+    vag1 = numpy.array([0, 0, 255])
+    vag2 = numpy.array([0, 0, 255])
+    mask = cv2.inRange(X2, vag1, vag2)
+
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    
     for cnt in contours:
         if len(cnt)>5:
             ellipse = cv2.fitEllipse(cnt)
@@ -146,7 +129,19 @@ def X_3(X1, X2):
             h = ellipse[1][0]
             w = ellipse[1][1]
     
-    #mask
+    x = math.ceil(x)
+    y = math.ceil(y)
+    h = math.ceil(h / 2)
+    w = math.ceil(w / 2)
+    nip_h = int(5 + aur.w*random.uniform(0.1, 0.1))
+    nip_w = int(5 + aur.w*random.uniform(0.1, 0.1))
+
+    tit = cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
+    aur = cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
+    nip = cv2.ellipse(details, (x, y), (nip_h, nip_w), 0, 0, 360, (255, 255, 255), -1)
+    bel = cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
+    vag = cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
+
     f1 = numpy.array([0, 255, 0])
     f2 = numpy.array([0, 255, 0])
     mask = cv2.inRange(X1, f1, f2)
