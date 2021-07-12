@@ -103,18 +103,18 @@ def X_3(X1, X2):
     X1 = numpy.array(X1)
     X2 = numpy.array(X2)
     for obj in Annotations(X2):
-        x = math.ceil(obj.x)
-        y = math.ceil(obj.y)
+        x = obj.x
+        y = obj.y
         h = math.ceil(obj.h / 2)
         w = math.ceil(obj.w / 2)
-        if obj.name == 'tit': cv2.ellipse(X1, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
+        if obj.name == 'tit': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
         if obj.name == 'aur': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
         if obj.name == 'nip': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
         if obj.name == 'bel': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
         if obj.name == 'vag': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
     mask = cv2.inRange(X1, (0, 255, 0), (0, 255, 0))
     mask_invert = numpy.invert(mask)
-    X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(A1, A1, mask=mask) + cv2.bitwise_and(X1, X1, mask=mask)
+    X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(A1, A1, mask=mask)
     return X_3
 
 class BodyPart:
