@@ -16,41 +16,39 @@ image = PIL.Image.open(arguments.input)
 new_width = math.ceil(image.size[0] * (512 / image.size[1]))
 new_image = image.resize((new_width, 512))
 
-'X1', 'X2', 'X3', 'X4'
-
 def Process():
 
     phase = 'X1', 'X2', 'X3', 'X4'
 
     for phase in phase:
 
-        if 'X1' or 'X2' or 'X4':
+        if phase == 'X1' or phase == 'X2' or phase == 'X4':
 
-            if 'X1': checkpoints = 'checkpoints/cm.lib'
-            if 'X2': checkpoints = 'checkpoints/mm.lib'
-            if 'X4': checkpoints = 'checkpoints/mn.lib'
+            if phase == 'X1': checkpoints = 'checkpoints/cm.lib'
+            if phase == 'X2': checkpoints = 'checkpoints/mm.lib'
+            if phase == 'X4': checkpoints = 'checkpoints/mn.lib'
 
-            if 'X1': data = torch.utils.data.DataLoader(Dataset(new_image))
-            if 'X2': data = torch.utils.data.DataLoader(Dataset(X1))
-            if 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
+            if phase == 'X1': data = torch.utils.data.DataLoader(Dataset(new_image))
+            if phase == 'X2': data = torch.utils.data.DataLoader(Dataset(X1))
+            if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
 
             for data in data:
                 generated = Model().inference(data['tensor'], checkpoints)
                 im = TensorToImage(generated[0])
 
-            if 'X1':
+            if phase == 'X1':
                 X1 = im
                 X1.save(os.path.join(arguments.output, 'X1.jpg'))
 
-            if 'X2':
+            if phase == 'X2':
                 X2 = im
                 X2.save(os.path.join(arguments.output, 'X2.jpg'))
 
-            if 'X4':
+            if phase == 'X4':
                 X4 = im.resize((image.size[0], image.size[1]))
                 X4.save(os.path.join(arguments.output, 'X4.jpg'))
 
-        if 'X3':
+        if phase == 'X3':
             X3 = PIL.Image.fromarray(X_3(X1, X2))
             X3.save(os.path.join(arguments.output, 'X3.jpg'))
 
@@ -113,11 +111,7 @@ def X_3(X1, X2):
         if obj.name == 'nip': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
         if obj.name == 'bel': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
         if obj.name == 'vag': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
-    f1 = numpy.array([0, 255, 0])
-    f2 = numpy.array([0, 255, 0])
-    mask = cv2.inRange(X1, f1, f2)
-    mask_invert = numpy.invert(mask)
-    X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(details, details, mask=mask)
+    X_3 = numpy.bitwise_or(X1, details)
     return X_3
 
 class BodyPart:
