@@ -102,16 +102,16 @@ def X_3(X1, X2):
     A1 = numpy.array(X1)
     X1 = numpy.array(X1)
     X2 = numpy.array(X2)
-    for obj in Annotations(X2):
+    for part in Annotations(X2):
         x = math.ceil(obj.x)
         y = math.ceil(obj.y)
         h = math.ceil(obj.h / 2)
         w = math.ceil(obj.w / 2)
-        if obj.name == 'tit': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
-        if obj.name == 'aur': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
-        if obj.name == 'nip': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
-        if obj.name == 'bel': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
-        if obj.name == 'vag': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
+        if part == 'tit': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
+        if part == 'aur': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
+        if part == 'nip': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
+        if part == 'bel': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
+        if part == 'vag': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
     mask = cv2.inRange(X1, (0, 255, 0), (0, 255, 0))
     mask_invert = numpy.invert(mask)
     X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(A1, A1, mask=mask)
@@ -140,7 +140,7 @@ def Part(X2, part):
     if part == 'aur': mask = cv2.inRange(X2, (255, 0, 0), (255, 0, 0))
     if part == 'bel': mask = cv2.inRange(X2, (255, 0, 255), (255, 0, 255))
     if part == 'vag': mask = cv2.inRange(X2, (0, 0, 255), (0, 0, 255))
-    contours = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
         if len(cnt)>5:
             ellipse = cv2.fitEllipse(cnt)
