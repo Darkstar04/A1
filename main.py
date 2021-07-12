@@ -102,7 +102,7 @@ def X_3(X1, X2):
     A1 = numpy.array(X1)
     X1 = numpy.array(X1)
     X2 = numpy.array(X2)
-    for obj in Part(X2, part):
+    for obj in Annotations(X2):
         x = math.ceil(obj.x)
         y = math.ceil(obj.y)
         h = math.ceil(obj.h / 2)
@@ -126,6 +126,14 @@ class BodyPart:
         self.h = h
         self.w = w
 
+def Annotations(X2):
+    tit = Part(X2, 'tit')
+    aur = Part(X2, 'aur')
+    bel = Part(X2, 'bel')
+    vag = Part(X2, 'vag')
+    nip = Nip(aur)
+    return tit + aur + nip + bel + vag
+
 def Part(X2, part):
     bodypart = []
     if part == 'tit': mask = cv2.inRange(X2, (0, 0, 0), (0, 0, 0))
@@ -146,7 +154,7 @@ def Part(X2, part):
 def Nip(aur):
     nip = []
     for aur in aur:
-        nip_dim = int(5 + aur.w*random.uniform(0.1, 0.1))
+        nip_dim = int(5 + aur.w)
         nip.append(BodyPart('nip', aur.x, aur.y, nip_dim, nip_dim))
     return nip
 
