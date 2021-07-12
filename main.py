@@ -107,11 +107,15 @@ def X_3(X1, X2):
         h = math.ceil(obj.h / 2)
         w = math.ceil(obj.w / 2)
         if obj.name == 'tit': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
-        if obj.name == 'aur': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
-        if obj.name == 'nip': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
-        if obj.name == 'bel': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
-        if obj.name == 'vag': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
-    X_3 = cv2.bitwise_and(X1, X1) + cv2.bitwise_and(details, details)
+        if obj.name == 'aur': cv2.ellipse(X1, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
+        if obj.name == 'nip': cv2.ellipse(X1, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
+        if obj.name == 'bel': cv2.ellipse(X1, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
+        if obj.name == 'vag': cv2.ellipse(X1, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
+    f1 = numpy.array([0, 255, 0])
+    f2 = numpy.array([0, 255, 0])
+    mask = cv2.inRange(X1, f1, f2)
+    mask_invert = numpy.invert(mask)
+    X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(details, details, mask=mask)
     return X_3
 
 class BodyPart:
