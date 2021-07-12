@@ -111,8 +111,7 @@ def X_3(X1, X2):
         if obj.name == 'nip': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
         if obj.name == 'bel': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
         if obj.name == 'vag': cv2.ellipse(details, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
-    f = numpy.array([0, 255, 0])
-    mask = cv2.inRange(X1, f, f)
+    mask = cv2.inRange(X1, (0, 255, 0), (0, 255, 0))
     mask_invert = numpy.invert(mask)
     X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(details, details, mask=mask)
     return X_3
