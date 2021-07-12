@@ -115,7 +115,7 @@ def X_3(X1, X2):
     f2 = numpy.array([0, 255, 0])
     mask = cv2.inRange(X1, f1, f2)
     mask_invert = numpy.invert(mask)
-    X_3 = cv2.bitwise_and(X1, mask=mask_invert) + cv2.bitwise_and(details, mask=mask)
+    X_3 = cv2.bitwise_and(X1, X1) + cv2.bitwise_and(details, details, mask=mask)
     return X_3
 
 class BodyPart:
