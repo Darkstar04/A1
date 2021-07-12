@@ -136,18 +136,10 @@ def Annotations(X2):
 def Part(X2, part):
     X2 = numpy.array(X2)
     bodypart = []
-    if part == 'tit':
-        f = numpy.array([0, 0, 0])
-        mask = cv2.inRange(X2, f, f)
-    if part == 'aur':
-        f = numpy.array([255, 0, 0])
-        mask = cv2.inRange(X2, f, f)
-    if part == 'bel':
-        f = numpy.array([255, 0, 255])
-        mask = cv2.inRange(X2, f, f)
-    if part == 'vag':
-        f = numpy.array([0, 0, 255])
-        mask = cv2.inRange(X2, f, f)
+    if part == 'tit': mask = cv2.inRange(X2, (0, 0, 0), (0, 0, 0))
+    if part == 'aur': mask = cv2.inRange(X2, (255, 0, 0), (255, 0, 0))
+    if part == 'bel': mask = cv2.inRange(X2, (255, 0, 255), (255, 0, 255))
+    if part == 'vag': mask = cv2.inRange(X2, (0, 0, 255), (0, 0, 255))
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
         if len(cnt)>5:
