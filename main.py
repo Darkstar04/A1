@@ -109,6 +109,7 @@ def X_3(X1, X2):
         w = math.ceil(obj.w / 2)
         if obj.name == 'tit': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
         if obj.name == 'aur': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
+        if obj.name == 'nip': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
         if obj.name == 'bel': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
         if obj.name == 'vag': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
     mask = cv2.inRange(X1, (0, 255, 0), (0, 255, 0))
@@ -130,7 +131,8 @@ def Annotations(X2):
     aur = Part(X2, 'aur')
     bel = Part(X2, 'bel')
     vag = Part(X2, 'vag')
-    return tit + aur + bel + vag
+    nip = Nip(aur)
+    return tit + aur + nip + bel + vag
 
 def Part(X2, part):
     bodypart = []
@@ -148,5 +150,12 @@ def Part(X2, part):
             w = ellipse[1][1]
             bodypart.append(BodyPart(part, x, y, h, w))
     return bodypart
+
+def Nip(aur):
+    nip = []
+    for aur in aur:
+        nip_dim = int(5 + aur.w*random.uniform(0.5, 0.9))
+        nip.append(BodyPart('nip', aur.x, aur.y, nip_dim, nip_dim))
+    return nip
 
 if __name__ == '__main__': Process()
