@@ -113,7 +113,7 @@ def X_3(X1, X2):
         if obj.name == 'vag': cv2.ellipse(X2, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
     mask = cv2.inRange(X1, (0, 255, 0), (0, 255, 0))
     mask_invert = numpy.invert(mask)
-    X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(A1, A1, mask=mask)
+    X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(X2, X2, mask=mask)
     return X_3
 
 class BodyPart:
