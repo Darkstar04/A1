@@ -134,7 +134,7 @@ def Annotations(X2):
     return tit + aur + nip + bel + vag
 
 def Part(X2, part):
-    bodypart = []
+    part = []
     if part == 'tit': mask = cv2.inRange(X2, (0, 0, 0), (0, 0, 0))
     if part == 'aur': mask = cv2.inRange(X2, (255, 0, 0), (255, 0, 0))
     if part == 'bel': mask = cv2.inRange(X2, (255, 0, 255), (255, 0, 255))
@@ -145,10 +145,10 @@ def Part(X2, part):
             ellipse = cv2.fitEllipse(cnt)
             x = ellipse[0][0]
             y = ellipse[0][1]
-            h = ellipse[1][1]
-            w = ellipse[1][0]
-            bodypart.append(BodyPart(part, x, y, h, w))
-    return bodypart
+            h = ellipse[1][0]
+            w = ellipse[1][1]
+            part.append(BodyPart(part, x, y, h, w))
+    return part
 
 def Nip(aur):
     nip = []
