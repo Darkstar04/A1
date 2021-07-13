@@ -141,12 +141,14 @@ def Part(X2, part):
     if part == 'bel': mask = cv2.inRange(X2, (255, 0, 255), (255, 0, 255))
     if part == 'vag': mask = cv2.inRange(X2, (0, 0, 255), (0, 0, 255))
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    ellipse = cv2.fitEllipse(5)
-    x = ellipse[0][0]
-    y = ellipse[0][1]
-    h = ellipse[1][0]
-    w = ellipse[1][1]
-    bodypart.append(BodyPart(part, x, y, h, w))
+    for cnt in contours:
+        if len(cnt)>5:
+            ellipse = cv2.fitEllipse(cnt)
+            x = ellipse[0][0]
+            y = ellipse[0][1]
+            h = ellipse[1][0]
+            w = ellipse[1][1]
+            bodypart.append(BodyPart(part, x, y, h, w))
     return bodypart
 
 def Nip(aur):
