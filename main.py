@@ -111,7 +111,7 @@ def X_3(X1, X2):
         if obj.name == 'nip': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
         if obj.name == 'bel': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
         if obj.name == 'vag': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
-    mask = cv2.inRange(X2, (0, 255, 0), (0, 255, 0))
+    mask = cv2.inRange(X1, (0, 255, 0), (0, 255, 0))
     mask_invert = numpy.invert(mask)
     X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(A1, A1, mask=mask)
     return X_3
@@ -135,7 +135,7 @@ def Annotations(X2):
 
 def Part(X2, part):
     bodypart = []
-    if part == 'tit': mask = cv2.inRange(X2, (0, 0, 0), (0, 0, 0))
+    if part == 'tit': mask = cv2.inRange(X2, (30, 30, 30), (30, 30, 30))
     if part == 'aur': mask = cv2.inRange(X2, (255, 0, 0), (255, 0, 0))
     if part == 'bel': mask = cv2.inRange(X2, (255, 0, 255), (255, 0, 255))
     if part == 'vag': mask = cv2.inRange(X2, (0, 0, 255), (0, 0, 255))
