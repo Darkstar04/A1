@@ -100,6 +100,7 @@ class ResnetBlock(torch.nn.Module):
 def X_3(new_image, X1, X2):
     A1 = numpy.array(X1)
     B1 = numpy.array(new_image)
+    X1 = numpy.array(X1)
     X2 = numpy.array(X2)
     for obj in Annotations(X2):
         x = math.ceil(obj.x)
