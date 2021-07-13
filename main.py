@@ -145,8 +145,8 @@ def Part(X2, part):
             ellipse = cv2.fitEllipse(cnt)
             x = ellipse[0][0]
             y = ellipse[0][1]
-            h = ellipse[1][0]
-            w = ellipse[1][1]
+            h = ellipse[1][1]
+            w = ellipse[1][0]
             bodypart.append(BodyPart(part, x, y, h, w))
     return bodypart
 
