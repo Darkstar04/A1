@@ -154,7 +154,7 @@ def Part(X2, part):
 def Nip(aur):
     nip = []
     for aur in aur:
-        nip_dim = int(5 + aur.h * random.uniform(0.1, 0.1))
+        nip_dim = int(aur.w * random.uniform(0.1, 0.1))
         nip.append(BodyPart('nip', aur.x, aur.y, nip_dim, nip_dim))
     return nip
 
