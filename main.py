@@ -107,11 +107,11 @@ def X_3(X1, X2):
         y = math.ceil(obj.y)
         h = math.ceil(obj.h / 2)
         w = math.ceil(obj.w / 2)
-        tit = cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
-        aur = cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
-        nip = cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
-        bel = cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
-        vag = cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
+        if obj.name == 'tit': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 205, 0), -1)
+        if obj.name == 'aur': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 0), -1)
+        if obj.name == 'nip': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 255, 255), -1)
+        if obj.name == 'bel': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (255, 0, 255), -1)
+        if obj.name == 'vag': cv2.ellipse(A1, (x, y), (h, w), 0, 0, 360, (0, 0, 255), -1)
     mask = cv2.inRange(X1, (0, 255, 0), (0, 255, 0))
     mask_invert = numpy.invert(mask)
     X_3 = cv2.bitwise_and(X1, X1, mask=mask_invert) + cv2.bitwise_and(A1, A1, mask=mask)
@@ -142,13 +142,12 @@ def Part(X2, part):
     if part == 'vag': mask = cv2.inRange(X2, (0, 0, 255), (0, 0, 255))
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
-        if len(cnt)>5:
-            ellipse = cv2.fitEllipse(cnt)
-            x = ellipse[0][0]
-            y = ellipse[0][1]
-            h = ellipse[1][0]
-            w = ellipse[1][1]
-            bodypart.append(BodyPart(part, x, y, h, w))
+        ellipse = cv2.fitEllipse(cnt)
+        x = ellipse[0][0]
+        y = ellipse[0][1]
+        h = ellipse[1][0]
+        w = ellipse[1][1]
+        bodypart.append(BodyPart(part, x, y, h, w))
     return bodypart
 
 def Nip(aur):
