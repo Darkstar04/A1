@@ -3,7 +3,6 @@ import PIL
 import math
 import numpy
 import torch
-import random
 import argparse
 import torchvision
 
@@ -154,7 +153,7 @@ def Part(X2, part):
 def Nip(aur):
     nip = []
     for aur in aur:
-        nip_dim = int(5 + aur.w*random.uniform(0.5, 0.5))
+        nip_dim = int(5 + aur.w * numpy.random.uniform(0.1, 0.1))
         nip.append(BodyPart('nip', aur.x, aur.y, nip_dim, nip_dim))
     return nip
 
