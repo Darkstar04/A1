@@ -127,19 +127,19 @@ class BodyPart:
         self.w = w
 
 def Annotations(X2):
-    tit = Part(X2, 'tit')
-    aur = Part(X2, 'aur')
-    bel = Part(X2, 'bel')
-    vag = Part(X2, 'vag')
+    tit = Part(X2, tit)
+    aur = Part(X2, aur)
+    bel = Part(X2, bel)
+    vag = Part(X2, vag)
     nip = Nip(aur)
     return tit + aur + nip + bel + vag
 
 def Part(X2, part):
     bodypart = []
-    if part == 'tit': mask = cv2.inRange(X2, (0, 0, 0), (0, 0, 0))
-    if part == 'aur': mask = cv2.inRange(X2, (255, 0, 0), (255, 0, 0))
-    if part == 'bel': mask = cv2.inRange(X2, (255, 0, 255), (255, 0, 255))
-    if part == 'vag': mask = cv2.inRange(X2, (0, 0, 255), (0, 0, 255))
+    if part == tit: mask = cv2.inRange(X2, (0, 0, 0), (0, 0, 0))
+    if part == aur: mask = cv2.inRange(X2, (255, 0, 0), (255, 0, 0))
+    if part == bel: mask = cv2.inRange(X2, (255, 0, 255), (255, 0, 255))
+    if part == vag: mask = cv2.inRange(X2, (0, 0, 255), (0, 0, 255))
     contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
         if len(cnt)>5:
