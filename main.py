@@ -78,9 +78,9 @@ class Generator(torch.nn.Module):
 
     def __init__(self, norm_layer=torch.nn.InstanceNorm2d, activation=torch.nn.ReLU()):
         super(Generator, self).__init__()
-        model = [torch.nn.ReflectionPad2d(3), torch.nn.Conv2d(3, 64, kernel_size=7), norm_layer(1), activation]
-        for i in range(4): model += [torch.nn.Conv2d(64 * (2**i), 128 * (2**i), kernel_size=3, stride=2, padding=1), norm_layer(1), activation]
-        for i in range(9): model += [ResnetBlock(1024, norm_layer, activation)]
+        model = [torch.nn.ReflectionPad2d(3), torch.nn.Conv2d(3, 64, kernel_size=7), norm_layer(1), torch.nn.ReLU()]
+        for i in range(4): model += [torch.nn.Conv2d(64 * (2**i), 128 * (2**i), kernel_size=3, stride=2, padding=1), norm_layer(1), torch.nn.ReLU()]
+        for i in range(9): model += [ResnetBlock(1024, torch.nn.InstanceNorm2d(), torch.nn.ReLU())]
         for i in range(4): model += [torch.nn.ConvTranspose2d(64 * (2**(4 - i)), 32 * (2**(4 - i)), kernel_size=3, stride=2, padding=1, output_padding=1), norm_layer(1), activation]
         model += [torch.nn.ReflectionPad2d(3), torch.nn.Conv2d(64, 3, kernel_size=7), torch.nn.Tanh()]
         self.model = torch.nn.Sequential(*model)
@@ -89,10 +89,10 @@ class Generator(torch.nn.Module):
 
 class ResnetBlock(torch.nn.Module):
 
-    def __init__(self, dimension, norm_layer, activation=torch.nn.ReLU()):
+    def __init__(self, dimension):
         super(ResnetBlock, self).__init__()
-        conv_block = [torch.nn.ReflectionPad2d(1), torch.nn.Conv2d(1024, 1024, kernel_size=3), norm_layer(1), activation]
-        conv_block += [torch.nn.ReflectionPad2d(1), torch.nn.Conv2d(1024, 1024, kernel_size=3), norm_layer(1)]
+        conv_block = [torch.nn.ReflectionPad2d(1), torch.nn.Conv2d(1024, 1024, kernel_size=3), torch.nn.InstanceNorm2d(1), torch.nn.ReLU()]
+        conv_block += [torch.nn.ReflectionPad2d(1), torch.nn.Conv2d(1024, 1024, kernel_size=3), torch.nn.InstanceNorm2d(1)]
         self.conv_block = torch.nn.Sequential(*conv_block)
 
     def forward(self, x): return x + self.conv_block(x)
