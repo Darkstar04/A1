@@ -33,18 +33,21 @@ def Process():
 
             for data in data:
                 tensor = Model().inference(data['tensor'], checkpoints)
-                im = TensorToImage(tensor)
+                new_tensor = (tensor[0] + 1) / 2
+                conv_tensor = torchvision.transforms.functional.convert_image_dtype(new_tensor, torch.uint8)
+                pil_image = torchvision.transforms.ToPILImage()(conv_tensor)
+                result = torchvision.transforms.functional.crop(pil_image, 0, 0, 512, new_width)
 
             if phase == 'X1':
-                X1 = im
+                X1 = result
                 X1.save(os.path.join(arguments.output, 'X1.jpg'))
 
             if phase == 'X2':
-                X2 = im
+                X2 = result
                 X2.save(os.path.join(arguments.output, 'X2.jpg'))
 
             if phase == 'X4':
-                X4 = im.resize((image.size[0], image.size[1]))
+                X4 = result.resize((image.size[0], image.size[1]))
                 X4.save(os.path.join(arguments.output, 'X4.jpg'))
 
         if phase == 'X3':
@@ -67,12 +70,6 @@ class Model:
         self.Generator = Generator()
         self.Generator.load_state_dict(torch.load(checkpoints))
         with torch.no_grad(): return self.Generator.forward(tensor)
-
-def TensorToImage(tensor):
-    tensor = (tensor + 1) / 2
-    new_tensor = torchvision.transforms.functional.convert_image_dtype(tensor, torch.uint8)
-    pillow_image = torchvision.transforms.ToPILImage()(new_tensor)
-    return torchvision.transforms.functional.crop(pillow_image, 0, 0, 512, new_width)
 
 class Generator(torch.nn.Module):
 
