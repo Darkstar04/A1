@@ -66,7 +66,7 @@ class Dataset:
 
 class Model:
 
-    def inference(input_tensor, checkpoints):
+    def inference(self, input_tensor, checkpoints):
         Gen = Generator()
         Gen.load_state_dict(torch.load(checkpoints))
         with torch.no_grad(): return Gen.forward(input_tensor)
