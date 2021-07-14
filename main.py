@@ -32,9 +32,8 @@ def Process():
             if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
 
             for data in data:
-                Generator = Generator()
-                Generator.load_state_dict(torch.load(checkpoints))
-                with torch.no_grad(): result = Generator.forward(data['tensor'])
+                Generator().load_state_dict(torch.load(checkpoints))
+                with torch.no_grad(): result = Generator().forward(data['tensor'])
                 im = TensorToImage(result[0])
 
             if phase == 'X1':
