@@ -15,42 +15,6 @@ image = PIL.Image.open(arguments.input)
 new_width = math.ceil(image.size[0] * (512 / image.size[1]))
 new_image = image.resize((new_width, 512))
 
-phase = 'X1', 'X2', 'X3', 'X4'
-
-def Process():
-
-    for phase in phase:
-
-        if phase == 'X1' or phase == 'X2' or phase == 'X4':
-
-            if phase == 'X1': checkpoints = 'checkpoints/cm.lib'
-            if phase == 'X2': checkpoints = 'checkpoints/mm.lib'
-            if phase == 'X4': checkpoints = 'checkpoints/mn.lib'
-
-            if phase == 'X1': data = torch.utils.data.DataLoader(Dataset(new_image))
-            if phase == 'X2': data = torch.utils.data.DataLoader(Dataset(X1))
-            if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
-
-            for data in data:
-                generated = Model().inference(data['tensor'], checkpoints)
-                im = TensorToImage(generated[0])
-
-            if phase == 'X1':
-                X1 = im
-                X1.save(os.path.join(arguments.output, 'X1.jpg'))
-
-            if phase == 'X2':
-                X2 = im
-                X2.save(os.path.join(arguments.output, 'X2.jpg'))
-
-            if phase == 'X4':
-                X4 = im.resize((image.size[0], image.size[1]))
-                X4.save(os.path.join(arguments.output, 'X4.jpg'))
-
-        if phase == 'X3':
-            X3 = PIL.Image.fromarray(X_3(X1, X2))
-            X3.save(os.path.join(arguments.output, 'X3.jpg'))
-
 class Dataset:
 
     def __init__(self, image): self.A = image
@@ -68,11 +32,46 @@ class Model:
         self.Generator.load_state_dict(torch.load(checkpoints))
         with torch.no_grad(): return self.Generator.forward(tensor)
 
-def TensorToImage(tensor):
-    tensor = (tensor + 1) / 2
-    new_tensor = torchvision.transforms.functional.convert_image_dtype(tensor, torch.uint8)
-    pillow_image = torchvision.transforms.ToPILImage()(new_tensor)
-    return torchvision.transforms.functional.crop(pillow_image, 0, 0, 512, new_width)
+new_tensor = (tensor + 1) / 2
+converted_tensor = torchvision.transforms.functional.convert_image_dtype(new_tensor, torch.uint8)
+pillow_image = torchvision.transforms.ToPILImage()(converted_tensor)
+result_image = torchvision.transforms.functional.crop(pillow_image, 0, 0, 512, new_width)
+
+def Process():
+
+    phase = 'X1', 'X2', 'X3', 'X4'
+
+    for phase in phase:
+
+        if phase == 'X1' or phase == 'X2' or phase == 'X4':
+
+            if phase == 'X1': checkpoints = 'checkpoints/cm.lib'
+            if phase == 'X2': checkpoints = 'checkpoints/mm.lib'
+            if phase == 'X4': checkpoints = 'checkpoints/mn.lib'
+
+            if phase == 'X1': data = torch.utils.data.DataLoader(Dataset(new_image))
+            if phase == 'X2': data = torch.utils.data.DataLoader(Dataset(X1))
+            if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
+
+            for data in data:
+                generated = Model().inference(data['tensor'], checkpoints)
+                im = result_image
+
+            if phase == 'X1':
+                X1 = im
+                X1.save(os.path.join(arguments.output, 'X1.jpg'))
+
+            if phase == 'X2':
+                X2 = im
+                X2.save(os.path.join(arguments.output, 'X2.jpg'))
+
+            if phase == 'X4':
+                X4 = im.resize((image.size[0], image.size[1]))
+                X4.save(os.path.join(arguments.output, 'X4.jpg'))
+
+        if phase == 'X3':
+            X3 = PIL.Image.fromarray(X_3(X1, X2))
+            X3.save(os.path.join(arguments.output, 'X3.jpg'))
 
 class Generator(torch.nn.Module):
 
