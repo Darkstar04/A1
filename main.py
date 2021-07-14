@@ -32,9 +32,8 @@ def Process():
             if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
 
             for data in data:
-                Generator().load_state_dict(torch.load(checkpoints))
-                with torch.no_grad(): result = Generator().forward(data['tensor'])
-                im = TensorToImage(result[0])
+                tensor = Model().inference(data['tensor'], checkpoints)
+                im = TensorToImage(tensor[0])
 
             if phase == 'X1':
                 X1 = im
@@ -61,6 +60,13 @@ class Dataset:
         return tensor
 
     def __len__(self): return 1
+
+class Model:
+
+    def inference(self, tensor, checkpoints):
+        self.Generator = Generator()
+        self.Generator.load_state_dict(torch.load(checkpoints))
+        with torch.no_grad(): return self.Generator.forward(tensor)
 
 def TensorToImage(tensor):
     tensor = (tensor + 1) / 2
