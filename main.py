@@ -33,7 +33,7 @@ def Process():
 
             for data in data:
                 tensor = Model().inference(data['tensor'], checkpoints)
-                im = TensorToImage(tensor[0])
+                im = TensorToImage(tensor)
 
             if phase == 'X1':
                 X1 = im
