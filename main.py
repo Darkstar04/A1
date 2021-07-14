@@ -20,17 +20,17 @@ class Dataset:
     def __init__(self, image): self.A = image
 
     def __getitem__(self, index):
-        tensor = {'tensor': torchvision.transforms.ToTensor()(self.A)}
-        return tensor
+        tensor_A = {'tensor': torchvision.transforms.ToTensor()(self.A)}
+        return tensor_A
 
     def __len__(self): return 1
 
 class Model:
 
-    def inference(self, tensor, checkpoints):
+    def inference(self, tensor_A, checkpoints):
         self.Generator = Generator()
         self.Generator.load_state_dict(torch.load(checkpoints))
-        with torch.no_grad(): return self.Generator.forward(tensor)
+        with torch.no_grad(): return self.Generator.forward(tensor_A)
 
 def Process():
 
@@ -82,7 +82,7 @@ class Generator(torch.nn.Module):
         model += [torch.nn.ReflectionPad2d(3), torch.nn.Conv2d(64, 3, kernel_size=7), torch.nn.Tanh()]
         self.model = torch.nn.Sequential(*model)
 
-    def forward(self, tensor): return self.model(tensor)
+    def forward(self, tensor): return self.model(tensor_A)
 
 class ResnetBlock(torch.nn.Module):
 
