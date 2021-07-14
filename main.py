@@ -15,9 +15,9 @@ image = PIL.Image.open(arguments.input)
 new_width = math.ceil(image.size[0] * (512 / image.size[1]))
 new_image = image.resize((new_width, 512))
 
-def Process():
+phase = 'X1', 'X2', 'X3', 'X4'
 
-    phase = 'X1', 'X2', 'X3', 'X4'
+def Process():
 
     for phase in phase:
 
