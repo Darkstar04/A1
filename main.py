@@ -15,6 +15,23 @@ image = PIL.Image.open(arguments.input)
 new_width = math.ceil(image.size[0] * (512 / image.size[1]))
 new_image = image.resize((new_width, 512))
 
+class Dataset:
+
+    def __init__(self, image): self.A = image
+
+    def __getitem__(self, index):
+        tensor = {'tensor': torchvision.transforms.ToTensor()(self.A)}
+        return tensor
+
+    def __len__(self): return 1
+
+class Model:
+
+    def inference(self, tensor, checkpoints):
+        self.Generator = Generator()
+        self.Generator.load_state_dict(torch.load(checkpoints))
+        with torch.no_grad(): return self.Generator.forward(tensor)
+
 def Process():
 
     phase = 'X1', 'X2', 'X3', 'X4'
@@ -31,7 +48,7 @@ def Process():
             if phase == 'X2': data = torch.utils.data.DataLoader(Dataset(X1))
             if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
 
-            tensor = Model().inference(data['tensor'], checkpoints)
+            for data in data: tensor = Model().inference(data['tensor'], checkpoints)
 
             new_tensor = (tensor[0] + 1) / 2
             conv_tensor = torchvision.transforms.functional.convert_image_dtype(new_tensor, torch.uint8)
@@ -53,23 +70,6 @@ def Process():
         if phase == 'X3':
             X3 = PIL.Image.fromarray(X_3(X1, X2))
             X3.save(os.path.join(arguments.output, 'X3.jpg'))
-
-class Dataset:
-
-    def __init__(self, image): self.A = image
-
-    def __getitem__(self, index):
-        tensor = {'tensor': torchvision.transforms.ToTensor()(self.A)}
-        return tensor
-
-    def __len__(self): return 1
-
-class Model:
-
-    def inference(self, tensor, checkpoints):
-        self.Generator = Generator()
-        self.Generator.load_state_dict(torch.load(checkpoints))
-        with torch.no_grad(): return self.Generator.forward(tensor)
 
 class Generator(torch.nn.Module):
 
