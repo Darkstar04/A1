@@ -31,7 +31,7 @@ def Process():
             if phase == 'X2': data = torch.utils.data.DataLoader(Dataset(X1))
             if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
 
-            for data in data: tensor = Model().inference(data['tensor'], checkpoints)
+            for data in data: tensor = Model().inference(data, checkpoints)
 
             new_tensor = (tensor[0] + 1) / 2
             conv_tensor = torchvision.transforms.functional.convert_image_dtype(new_tensor, torch.uint8)
