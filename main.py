@@ -15,28 +15,6 @@ image = PIL.Image.open(arguments.input)
 new_width = math.ceil(image.size[0] * (512 / image.size[1]))
 new_image = image.resize((new_width, 512))
 
-class Dataset:
-
-    def __init__(self, image): self.A = image
-
-    def __getitem__(self, index):
-        tensor = {'tensor': torchvision.transforms.ToTensor()(self.A)}
-        return tensor
-
-    def __len__(self): return 1
-
-class Model:
-
-    def inference(self, tensor, checkpoints):
-        self.Generator = Generator()
-        self.Generator.load_state_dict(torch.load(checkpoints))
-        with torch.no_grad(): return self.Generator.forward(tensor)
-
-new_tensor = (tensor + 1) / 2
-converted_tensor = torchvision.transforms.functional.convert_image_dtype(new_tensor, torch.uint8)
-pillow_image = torchvision.transforms.ToPILImage()(converted_tensor)
-result_image = torchvision.transforms.functional.crop(pillow_image, 0, 0, 512, new_width)
-
 def Process():
 
     phase = 'X1', 'X2', 'X3', 'X4'
@@ -54,8 +32,10 @@ def Process():
             if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
 
             for data in data:
-                generated = Model().inference(data['tensor'], checkpoints)
-                im = result_image
+                Generator = Generator()
+                Generator.load_state_dict(torch.load(checkpoints))
+                with torch.no_grad(): result = Generator.forward(data['tensor'])
+                im = TensorToImage(result[0])
 
             if phase == 'X1':
                 X1 = im
@@ -72,6 +52,22 @@ def Process():
         if phase == 'X3':
             X3 = PIL.Image.fromarray(X_3(X1, X2))
             X3.save(os.path.join(arguments.output, 'X3.jpg'))
+
+class Dataset:
+
+    def __init__(self, image): self.A = image
+
+    def __getitem__(self, index):
+        tensor = {'tensor': torchvision.transforms.ToTensor()(self.A)}
+        return tensor
+
+    def __len__(self): return 1
+
+def TensorToImage(tensor):
+    tensor = (tensor + 1) / 2
+    new_tensor = torchvision.transforms.functional.convert_image_dtype(tensor, torch.uint8)
+    pillow_image = torchvision.transforms.ToPILImage()(new_tensor)
+    return torchvision.transforms.functional.crop(pillow_image, 0, 0, 512, new_width)
 
 class Generator(torch.nn.Module):
 
