@@ -31,11 +31,12 @@ def Process():
             if phase == 'X2': data = torch.utils.data.DataLoader(Dataset(X1))
             if phase == 'X4': data = torch.utils.data.DataLoader(Dataset(X3))
 
-            for data in data: out_tensor = Model().inference(data['tensor'], checkpoints)
-            out_tensor = (out_tensor[0] + 1) / 2
-            out_tensor = torchvision.transforms.functional.convert_image_dtype(out_tensor, torch.uint8)
-            pillow_image = torchvision.transforms.ToPILImage()(out_tensor)
-            result_image = torchvision.transforms.functional.crop(pillow_image, 0, 0, 512, new_width)
+            for data in data: output_tensor = Model().inference(data['tensor'], checkpoints)
+            
+            output_tensor = (output_tensor[0] + 1) / 2
+            output_tensor = torchvision.transforms.functional.convert_image_dtype(output_tensor, torch.uint8)
+            result_image = torchvision.transforms.ToPILImage()(output_tensor)
+            result_image = torchvision.transforms.functional.crop(result_image, 0, 0, 512, new_width)
 
             if phase == 'X1':
                 X1 = result_image
@@ -58,17 +59,17 @@ class Dataset:
     def __init__(self, image): self.A = image
 
     def __getitem__(self, index):
-        in_tensor = {'tensor': torchvision.transforms.ToTensor()(self.A)}
-        return in_tensor
+        input_tensor = {'tensor': torchvision.transforms.ToTensor()(self.A)}
+        return input_tensor
 
     def __len__(self): return 1
 
 class Model:
 
-    def inference(self, in_tensor, checkpoints):
+    def inference(self, input_tensor, checkpoints):
         self.Generator = Generator()
         self.Generator.load_state_dict(torch.load(checkpoints))
-        with torch.no_grad(): return self.Generator.forward(in_tensor)
+        with torch.no_grad(): return self.Generator.forward(input_tensor)
 
 class Generator(torch.nn.Module):
 
@@ -81,7 +82,7 @@ class Generator(torch.nn.Module):
         model += [torch.nn.ReflectionPad2d(3), torch.nn.Conv2d(64, 3, kernel_size=7), torch.nn.Tanh()]
         self.model = torch.nn.Sequential(*model)
 
-    def forward(self, in_tensor): return self.model(in_tensor)
+    def forward(self, input_tensor): return self.model(input_tensor)
 
 class ResnetBlock(torch.nn.Module):
 
